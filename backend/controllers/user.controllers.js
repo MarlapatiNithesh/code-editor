@@ -260,9 +260,7 @@ module.exports.selectProject = async (req, res) => {
     const { id } = req.params;
 
     if (!id) {
-      return res
-        .status(400)
-        .json({ success: false, msg: "Project ID is required" });
+      return res.status(400).json({ success: false, msg: "Project ID is required" });
     }
 
     const project = await Project.findById(id);
@@ -281,17 +279,13 @@ module.exports.deleteProject = async (req, res) => {
   try {
     const { id } = req.params;
     if (!id) {
-      return res
-        .status(400)
-        .json({ success: false, msg: "Project ID is required" });
+      return res.status(400).json({ success: false, msg: "Project ID is required" });
     }
     const project = await Project.findByIdAndDelete(id);
     if (!project) {
       return res.status(404).json({ success: false, msg: "Project not found" });
     }
-    return res
-      .status(200)
-      .json({ success: true, msg: "Project deleted successfully" });
+    return res.status(200).json({ success: true, msg: "Project deleted successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, msg: err.message });
@@ -302,7 +296,7 @@ module.exports.Logout = async (req, res) => {
   try {
     res.clearCookie("token", {
       httpOnly: true,
-      secure: true, // Set to true in production
+      secure: true,
       sameSite: "None",
     });
 
@@ -313,3 +307,24 @@ module.exports.Logout = async (req, res) => {
   }
 };
 
+module.exports.getUser = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+
+    if (!token) {
+      return res.status(401).json({ success: false, msg: "No token provided" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(404).json({ success: false, msg: "User not found" });
+    }
+
+    return res.status(200).json({user});
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: err.message });
+  }
+};
