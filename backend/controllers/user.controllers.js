@@ -76,8 +76,8 @@ module.exports.SignUp = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "strict",
+      secure: true,
+      sameSite: "None",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -128,8 +128,8 @@ module.exports.Login = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "strict",
+      secure: true,
+      sameSite: "None",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -302,8 +302,8 @@ module.exports.Logout = async (req, res) => {
   try {
     res.clearCookie("token", {
       httpOnly: true,
-      secure: false, // Set to true in production
-      sameSite: "strict",
+      secure: true, // Set to true in production
+      sameSite: "None",
     });
 
     res.status(200).json({ message: "Logout successful" });
